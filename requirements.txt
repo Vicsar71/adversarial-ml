@@ -1,0 +1,7 @@
+torch>=2.12
+torchvision>=0.20
+pillow>=10.0
+pydantic>=2.7
+typer[all]>=0.12
+rich>=13.7
+pytest>=8.2
