@@ -13,7 +13,7 @@ class AttackConfig(BaseModel):
     method: str = "fgsm"        # "fgsm" | "pgd"
     epsilon: float = 0.03       # max L-inf perturbation in [0,1] pixel space
     steps: int = 40             # PGD only
-    alpha: float | None = None  # PGD step size; defaults to epsilon/10
+    alpha: float | None = None  # PGD step size; defaults to epsilon/4
 
 
 class AttackResult(BaseModel):
@@ -28,4 +28,14 @@ class AttackResult(BaseModel):
     l2: float                   # L2 norm of perturbation (normalized by pixels)
     adversarial_image_path: str = ""
     perturbation_image_path: str = ""
+    timestamp: datetime
+
+
+class CompareResult(BaseModel):
+    image_path: str
+    epsilon: float
+    original_top1: Prediction
+    original_top5: list[Prediction]
+    fgsm: AttackResult
+    pgd: AttackResult
     timestamp: datetime
