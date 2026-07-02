@@ -29,6 +29,16 @@ Original: Border collie (47.9%)
 
 FGSM halves the model's confidence but fails to change the prediction. PGD — same budget, same image — makes ResNet-50 classify a Border Collie as a manhole cover with 99.6% confidence.
 
+### HTML report
+
+Running with `--format html` generates a self-contained report you can open in any browser — no server, no dependencies. It embeds the original image, the adversarial image, and the amplified perturbation as base64, together with top-5 confidence bars before and after the attack:
+
+![HTML report screenshot](docs/report_screenshot.png)
+
+> *To add this screenshot: run `python -m adversarial compare photo.jpg --format html`, open the generated `.html` file in a browser, and take a screenshot.*
+
+---
+
 Three files are saved to `reports/` after each run:
 
 | File | Contents |
@@ -99,6 +109,12 @@ python -m adversarial attack photo.jpg --format both
 # save only Markdown
 python -m adversarial attack photo.jpg --format md
 
+# attack every image in a folder (shows progress bar + summary table)
+python -m adversarial batch my_images/
+
+# batch with PGD and HTML output
+python -m adversarial batch my_images/ --method pgd --format html
+
 # custom output directory
 python -m adversarial attack photo.jpg --output my_reports/
 ```
@@ -141,7 +157,7 @@ adversarial/
 │   └── pgd.py           — pgd_step (pure testable kernel) + pgd_attack
 ├── reporter.py          — saves JSON + Markdown + HTML; save_reports and save_compare_reports
 ├── html_reporter.py     — self-contained HTML with base64-embedded images and confidence bars
-└── cli.py               — Typer CLI: attack and compare subcommands; lazy torch imports
+└── cli.py               — Typer CLI: attack, compare, batch subcommands; lazy torch imports
 tests/
 ├── test_models.py       — Pydantic model and serialization tests
 ├── test_attacks.py      — pure FGSM math tests (CPU tensors, no GPU or model needed)
@@ -166,7 +182,7 @@ Both `fgsm_step` and `pgd_step` are tested in isolation with random CPU tensors,
 - [x] **Milestone 1** — ResNet-50 classifier + FGSM attack + CLI + JSON/Markdown reports + 14 tests
 - [x] **Milestone 2** — PGD attack (iterative, 40 steps) + `compare` command (FGSM vs PGD side by side) + 21 tests
 - [x] **Milestone 3** — Self-contained HTML report with base64-embedded images and top-5 confidence bar charts + 31 tests
-- [ ] **Milestone 4** — Batch mode (attack a whole folder) + README with GIF demo
+- [x] **Milestone 4** — Batch mode (`batch` command: progress bar, per-image reports, summary table)
 
 ---
 
