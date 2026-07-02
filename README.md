@@ -35,9 +35,11 @@ Three files are saved to `reports/` after each run:
 |---|---|
 | `<name>_<method>_adv_<ts>.png` | Adversarial image — visually identical to the original |
 | `<name>_<method>_perturbation_<ts>.png` | The noise amplified ×10 to make it visible |
-| `<name>_<method>_<ts>.json` + `.md` | Full report: top-5 before/after and metrics |
+| `<name>_<method>_<ts>.json` | Raw data: top-5 before/after, metrics, file paths |
+| `<name>_<method>_<ts>.md` | Markdown report (with `--format md` or `both`) |
+| `<name>_<method>_<ts>.html` | Self-contained HTML with embedded images and confidence bars (with `--format html` or `both`) |
 
-The `compare` command additionally saves a side-by-side `<name>_compare_<ts>.json/md`.
+The `compare` command additionally saves `<name>_compare_<ts>.json/md/html`.
 
 ---
 
@@ -88,7 +90,13 @@ python -m adversarial attack photo.jpg --method pgd --steps 20
 # compare FGSM vs PGD side by side on the same image
 python -m adversarial compare photo.jpg --epsilon 0.03
 
-# save only Markdown (JSON is always written)
+# save HTML report with embedded images and confidence bars (JSON always written)
+python -m adversarial attack photo.jpg --format html
+
+# save both Markdown and HTML
+python -m adversarial attack photo.jpg --format both
+
+# save only Markdown
 python -m adversarial attack photo.jpg --format md
 
 # custom output directory
@@ -131,13 +139,14 @@ adversarial/
 ├── attacks/
 │   ├── fgsm.py          — fgsm_step (pure testable kernel) + fgsm_attack
 │   └── pgd.py           — pgd_step (pure testable kernel) + pgd_attack
-├── reporter.py          — saves JSON + Markdown; save_reports and save_compare_reports
-├── html_reporter.py     — self-contained HTML with base64 images (Milestone 3)
+├── reporter.py          — saves JSON + Markdown + HTML; save_reports and save_compare_reports
+├── html_reporter.py     — self-contained HTML with base64-embedded images and confidence bars
 └── cli.py               — Typer CLI: attack and compare subcommands; lazy torch imports
 tests/
 ├── test_models.py       — Pydantic model and serialization tests
 ├── test_attacks.py      — pure FGSM math tests (CPU tensors, no GPU or model needed)
-└── test_pgd.py          — pure PGD math tests (CPU tensors, no GPU or model needed)
+├── test_pgd.py          — pure PGD math tests (CPU tensors, no GPU or model needed)
+└── test_html_reporter.py — HTML rendering: XSS escaping, base64 embedding, confidence bars
 ```
 
 ---
@@ -145,10 +154,10 @@ tests/
 ## Tests
 
 ```bash
-pytest          # 21 tests, all pure logic — no GPU, no model download, no network
+pytest          # 31 tests, all pure logic — no GPU, no model download, no network
 ```
 
-Both `fgsm_step` and `pgd_step` are tested in isolation with random CPU tensors, verifying: L∞ bound, [0,1] clamping, epsilon-ball projection, zero-step identity, gradient direction, shape preservation, and input immutability.
+Both `fgsm_step` and `pgd_step` are tested in isolation with random CPU tensors, verifying: L∞ bound, [0,1] clamping, epsilon-ball projection, zero-step identity, gradient direction, shape preservation, and input immutability. The HTML reporter tests use PIL to create minimal PNG fixtures and verify XSS escaping, base64 embedding, and confidence bar rendering.
 
 ---
 
@@ -156,7 +165,7 @@ Both `fgsm_step` and `pgd_step` are tested in isolation with random CPU tensors,
 
 - [x] **Milestone 1** — ResNet-50 classifier + FGSM attack + CLI + JSON/Markdown reports + 14 tests
 - [x] **Milestone 2** — PGD attack (iterative, 40 steps) + `compare` command (FGSM vs PGD side by side) + 21 tests
-- [ ] **Milestone 3** — Self-contained HTML report with base64-embedded images and top-5 confidence bar charts
+- [x] **Milestone 3** — Self-contained HTML report with base64-embedded images and top-5 confidence bar charts + 31 tests
 - [ ] **Milestone 4** — Batch mode (attack a whole folder) + README with GIF demo
 
 ---

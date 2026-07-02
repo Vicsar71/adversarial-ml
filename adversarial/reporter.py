@@ -1,6 +1,7 @@
 from __future__ import annotations
 from pathlib import Path
 from .models import AttackResult, CompareResult
+from .html_reporter import render_html, render_compare_html
 
 
 def save_reports(
@@ -23,6 +24,11 @@ def save_reports(
         md_path = base.with_suffix(".md")
         md_path.write_text(_render_markdown(result), encoding="utf-8")
         paths["markdown"] = md_path
+
+    if fmt in ("html", "both"):
+        html_path = base.with_suffix(".html")
+        html_path.write_text(render_html(result), encoding="utf-8")
+        paths["html"] = html_path
 
     return paths
 
@@ -99,6 +105,11 @@ def save_compare_reports(
         md_path = base.with_suffix(".md")
         md_path.write_text(_render_compare_markdown(result), encoding="utf-8")
         paths["markdown"] = md_path
+
+    if fmt in ("html", "both"):
+        html_path = base.with_suffix(".html")
+        html_path.write_text(render_compare_html(result), encoding="utf-8")
+        paths["html"] = html_path
 
     return paths
 

@@ -37,6 +37,10 @@ def attack(
         console.print(f"[red]Unknown method:[/red] {method}. Choose fgsm or pgd.")
         raise typer.Exit(1)
 
+    if fmt not in ("md", "html", "both"):
+        console.print(f"[red]Unknown format:[/red] {fmt}. Choose md, html, or both.")
+        raise typer.Exit(1)
+
     import torch
     from .classifier import get_device, load_model, load_image, classify, tensor_to_pil, perturbation_to_pil
     from .attacks.fgsm import fgsm_attack
@@ -138,6 +142,10 @@ def compare(
 
     if not image.exists():
         console.print(f"[red]Image not found:[/red] {image}")
+        raise typer.Exit(1)
+
+    if fmt not in ("md", "html", "both"):
+        console.print(f"[red]Unknown format:[/red] {fmt}. Choose md, html, or both.")
         raise typer.Exit(1)
 
     import torch
