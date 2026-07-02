@@ -29,16 +29,6 @@ Original: Border collie (47.9%)
 
 FGSM halves the model's confidence but fails to change the prediction. PGD — same budget, same image — makes ResNet-50 classify a Border Collie as a manhole cover with 99.6% confidence.
 
-### HTML report
-
-Running with `--format html` generates a self-contained report you can open in any browser — no server, no dependencies. It embeds the original image, the adversarial image, and the amplified perturbation as base64, together with top-5 confidence bars before and after the attack:
-
-![HTML report screenshot](docs/report_screenshot.png)
-
-> *To add this screenshot: run `python -m adversarial compare photo.jpg --format html`, open the generated `.html` file in a browser, and take a screenshot.*
-
----
-
 Three files are saved to `reports/` after each run:
 
 | File | Contents |
