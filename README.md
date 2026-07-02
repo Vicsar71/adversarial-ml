@@ -4,6 +4,8 @@
 
 Implements **FGSM** (Goodfellow et al., 2014) and **PGD** (Madry et al., 2017) to demonstrate a core vulnerability in deep neural networks: the same model that achieves 76% top-1 accuracy on ImageNet can be systematically deceived by noise invisible to the human eye. Built as an AI/ML security project — the techniques used in academic adversarial robustness research, applied hands-on.
 
+![HTML report screenshot](assets/report_screenshot.png)
+
 ---
 
 ## Example
